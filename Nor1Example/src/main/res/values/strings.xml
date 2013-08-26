@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Nor1Example</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="pref_host">Host</string>
+    <string name="pref_summ_host">This is the host summary</string>
+    <string name="pref_default_host">http://trip.nor1solutions.com</string>
+</resources>
