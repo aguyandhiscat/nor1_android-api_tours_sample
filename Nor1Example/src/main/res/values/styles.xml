@@ -17,4 +17,12 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="AppTheme.SearchLabel">
+        <item name="android:paddingTop">10sp</item>
+        <item name="android:paddingBottom">10sp</item>
+        <item name="android:paddingRight">10sp</item>
+        <item name="android:layout_width">100sp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

@@ -2,8 +2,9 @@
 <resources>
 
     <string name="app_name">Nor1Example</string>
+    <string name="search_label">Search</string>
+    <string name="positive_agreement">Agree</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
 
     <string name="pref_host">Host</string>
     <string name="pref_summ_host">This is the host summary</string>

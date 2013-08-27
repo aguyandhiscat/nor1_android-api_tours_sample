@@ -1,8 +1,11 @@
 package com.nor1.example;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 /**
  * Created by alexwilczewski on 8/26/13.
@@ -23,5 +26,10 @@ public class SettingsFragment extends PreferenceFragment {
         super.onActivityCreated(savedInstanceState);
 
         ((SettingsActivity) getActivity()).init();
+    }
+
+    public static String getPreferenceHost(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getString(SettingsFragment.KEY_PREF_HOST, "");
     }
 }
