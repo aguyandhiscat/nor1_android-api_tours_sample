@@ -1,10 +1,8 @@
 package com.nor1.example;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -22,12 +20,11 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Map;
-
 public class MainActivity extends Activity {
     private final String TAG = "Nor1Example:MainActivity";
 
     private final int INTENT_SETTINGS_ACTIVITY = 1;
+    private final int INTENT_TRIP_LIST_ACTIVITY = 2;
 
     private EditText mEditAddress;
     private EditText mEditLatitude;
@@ -36,72 +33,59 @@ public class MainActivity extends Activity {
     private EditText mEditToDate;
     private EditText mEditCategories;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+    private Nor1Api mApi;
 
+    @Override
+        protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
         mEditAddress    = (EditText) findViewById(R.id.address);
-        mEditLatitude   = (EditText) findViewById(R.id.latitude);
-        mEditLongitude  = (EditText) findViewById(R.id.longitude);
         mEditFromDate   = (EditText) findViewById(R.id.from_date);
         mEditToDate     = (EditText) findViewById(R.id.to_date);
-        mEditCategories = (EditText) findViewById(R.id.categories);
+
+//        mEditLatitude   = (EditText) findViewById(R.id.latitude);
+//        mEditLongitude  = (EditText) findViewById(R.id.longitude);
+//        mEditCategories = (EditText) findViewById(R.id.categories);
 
         Button searchBtn = (Button) findViewById(R.id.search_submit);
         searchBtn.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View view) {
-                search();
+                openTripList();
             }
         });
+
+        mApi = new Nor1Api(this.getString(R.string.api_key));
     }
 
     public void search() {
-        String mHost = SettingsFragment.getPreferenceHost(this);
-        String url = mHost + "api/v1/search/";
-
         String mAddress = mEditAddress.getText().toString();
         String mFromDate = mEditFromDate.getText().toString();
         String mToDate = mEditToDate.getText().toString();
 
-        RequestParams params = new RequestParams();
-        params.put("address", mAddress);
-        params.put("from_date", mFromDate);
-        params.put("to_date", mToDate);
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, params, new JsonHttpResponseHandler() {
+        mApi.search(mAddress, mFromDate, mToDate, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(JSONArray timeline) {
-                Log.d(TAG, "OnSuccess");
+            public void onStart() {
+                // Set up a spinner or loading
+            }
+
+            @Override
+            public void onFinish() {
+                // Kill spinner
             }
 
             @Override
             public void onSuccess(JSONObject timeline) {
                 Log.d(TAG, "OnSuccess, JsonObject");
-            }
+                // Go to list Activity
+                // Pass timeline data through Intent
 
-            @Override
-            public void onFailure(Throwable e, JSONArray errorResponse) {
-                Log.d(TAG, "OnFailure, JsonArray");
-            }
-
-            @Override
-            public void onFailure(Throwable e, JSONObject errorResponse) {
-                Log.d(TAG, "OnFailure, JsonObject");
-                displayError(e);
-            }
-
-            @Override
-            public void onSuccess(String content) {
-                Log.d(TAG, "OnSuccess, String");
             }
 
             @Override
             public void onFailure(Throwable e, String response) {
                 Log.d(TAG, "OnFailure, String");
+                displayError(e);
             }
         });
     }
@@ -154,5 +138,10 @@ public class MainActivity extends Activity {
     protected void openSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivityForResult(intent, INTENT_SETTINGS_ACTIVITY);
+    }
+
+    protected void openTripList() {
+        Intent intent = new Intent(this, TripListActivity.class);
+        startActivityForResult(intent, INTENT_TRIP_LIST_ACTIVITY);
     }
 }

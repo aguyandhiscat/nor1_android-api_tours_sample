@@ -28,6 +28,13 @@
             android:name=".SettingsActivity">
 
         </activity>
+
+
+        <activity
+                android:name=".TripListActivity"
+                android:parentActivityName=".MainActivity">
+
+        </activity>
     </application>
 
 </manifest>

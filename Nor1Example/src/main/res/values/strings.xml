@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Nor1Example</string>
+
+    <!-- ACCOUNT SETTINGS -->
+    <string name="api_key">1234-5678-90</string>
+
+    <!-- Strings -->
     <string name="search_label">Search</string>
     <string name="positive_agreement">Agree</string>
     <string name="action_settings">Settings</string>
