@@ -1,4 +1,4 @@
-package com.nor1.example;
+package com.nor1.example.containers;
 
 /**
  * Created by alexwilczewski on 8/27/13.

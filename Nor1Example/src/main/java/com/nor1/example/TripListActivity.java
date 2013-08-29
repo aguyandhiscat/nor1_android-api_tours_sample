@@ -10,6 +10,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.nor1.example.adapter.TripListAdapter;
+import com.nor1.example.containers.Tour;
 
 import org.json.JSONArray;
 import org.json.JSONException;

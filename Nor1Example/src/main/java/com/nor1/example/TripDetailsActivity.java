@@ -2,17 +2,31 @@ package com.nor1.example;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nor1.example.containers.ImageItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by alexwilczewski on 8/29/13.
@@ -63,11 +77,11 @@ public class TripDetailsActivity extends Activity {
             textView = (TextView) findViewById(R.id.detail_description);
             textView.setText(timeline.getString("description_long"));
 
-            ListView mediaListView = (ListView) findViewById(R.id.detail_media_list);
-            setUpMediaList(mediaListView, timeline.getJSONArray("media"));
+            ViewGroup mediaView = (LinearLayout) findViewById(R.id.detail_media_list);
+            setUpMediaList(mediaView, timeline.getJSONArray("media"));
 
-            ListView schedulesListView = (ListView) findViewById(R.id.detail_schedules_list);
-            setUpSchedulesList(schedulesListView, timeline.getJSONObject("detail_schedules_list"));
+            ViewGroup schedulesView = (LinearLayout) findViewById(R.id.detail_schedules_list);
+            setUpSchedulesList(schedulesView, timeline.getJSONObject("detail_schedules_list"));
         } catch(JSONException e) {
             Log.e(TAG, "Json exception", e);
         }
@@ -77,11 +91,95 @@ public class TripDetailsActivity extends Activity {
         Toast.makeText(this, e.getMessage(), 2000).show();
     }
 
-    protected void setUpMediaList(ListView mediaListView, JSONArray media) {
+    protected void setUpMediaList(ViewGroup mediaView, JSONArray media) {
+        int len = media.length();
+        List<ImageItem> list = new ArrayList<ImageItem>();
 
+        for(int i=0; i<len; i++) {
+            try {
+                JSONObject imageData = media.getJSONObject(i);
+                String description = imageData.getString("description");
+                JSONArray imageVersions = imageData.getJSONArray("versions");
+                if(imageVersions.length() > 0) {
+                    String imageUrl = imageVersions.getJSONObject(0).getString("url");
+
+                    View viewElem = View.inflate(this, R.layout.list_item_media, null);
+                    TextView title = (TextView) viewElem.findViewById(R.id.item_media_title);
+                    title.setText(description);
+                    ImageView thumbnail = (ImageView) viewElem.findViewById(R.id.item_media_image);
+                    thumbnail.setTag(imageUrl);
+                    new DownloadImageTask().execute(thumbnail);
+
+                    mediaView.addView(viewElem);
+
+                    ImageItem ii = new ImageItem();
+                    ii.imageTitle = description;
+                    ii.imageUrl = imageUrl;
+
+                    list.add(ii);
+                }
+            } catch(JSONException e) {
+                Log.e(TAG, "JSON Exception", e);
+            }
+        }
     }
 
-    protected void setUpSchedulesList(ListView schedulesListView, JSONObject schedules) {
+    protected void setUpSchedulesList(ViewGroup schedulesView, JSONObject schedules) {
+        int len = schedules.length();
+        List<ImageItem> list = new ArrayList<ImageItem>();
 
+//        for(int i=0; i<len; i++) {
+//            try {
+//                JSONObject imageData = media.getJSONObject(i);
+//                String description = imageData.getString("description");
+//                JSONArray imageVersions = imageData.getJSONArray("versions");
+//                if(imageVersions.length() > 0) {
+//                    String imageUrl = imageVersions.getJSONObject(0).getString("url");
+//
+//                    View viewElem = View.inflate(this, R.layout.list_item_media, null);
+//                    TextView title = (TextView) viewElem.findViewById(R.id.item_media_title);
+//                    title.setText(description);
+//                    ImageView thumbnail = (ImageView) viewElem.findViewById(R.id.item_media_image);
+//                    thumbnail.setTag(imageUrl);
+//                    new DownloadImageTask().execute(thumbnail);
+//
+//                    mediaView.addView(viewElem);
+//
+//                    ImageItem ii = new ImageItem();
+//                    ii.imageTitle = description;
+//                    ii.imageUrl = imageUrl;
+//
+//                    list.add(ii);
+//                }
+//            } catch(JSONException e) {
+//                Log.e(TAG, "JSON Exception", e);
+//            }
+//        }
+    }
+
+    public class DownloadImageTask extends AsyncTask<ImageView, Void, Bitmap> {
+        ImageView imageView = null;
+
+        protected Bitmap doInBackground(ImageView... imageViews) {
+            this.imageView = imageViews[0];
+            return downloadImage((String)imageView.getTag());
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
+
+        private Bitmap downloadImage(String url) {
+            try {
+                URL newurl = new URL(url);
+                return BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
+            } catch(MalformedURLException e) {
+
+            } catch(IOException e) {
+
+            }
+            return Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
+        }
     }
 }

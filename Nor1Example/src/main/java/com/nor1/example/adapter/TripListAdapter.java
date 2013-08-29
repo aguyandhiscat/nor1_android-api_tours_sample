@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nor1.example.R;
-import com.nor1.example.Tour;
+import com.nor1.example.containers.Tour;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
