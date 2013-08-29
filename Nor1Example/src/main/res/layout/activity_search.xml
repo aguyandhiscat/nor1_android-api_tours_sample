@@ -13,30 +13,15 @@
         android:layout_alignParentTop="true"
         android:text="Address" />
     <TextView
-        android:id="@+id/latitude_label"
-        style="@style/AppTheme.SearchLabel"
-        android:layout_below="@id/address_label"
-        android:text="Latitude" />
-    <TextView
-        android:id="@+id/longitude_label"
-        style="@style/AppTheme.SearchLabel"
-        android:layout_below="@id/latitude_label"
-        android:text="Longitude" />
-    <TextView
         android:id="@+id/from_date_label"
         style="@style/AppTheme.SearchLabel"
-        android:layout_below="@id/longitude_label"
+        android:layout_below="@id/address_label"
         android:text="From Date" />
     <TextView
         android:id="@+id/to_date_label"
         style="@style/AppTheme.SearchLabel"
         android:layout_below="@id/from_date_label"
         android:text="To Date" />
-    <TextView
-        android:id="@+id/categories_label"
-        style="@style/AppTheme.SearchLabel"
-        android:layout_below="@id/to_date_label"
-        android:text="Categories" />
 
     <EditText
         android:id="@+id/address"
@@ -45,18 +30,6 @@
         android:layout_alignTop="@id/address_label"
         android:layout_toRightOf="@id/address_label"
             android:text="San Francisco, CA" />
-    <EditText
-        android:id="@+id/latitude"
-        android:layout_width="200sp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/latitude_label"
-        android:layout_toRightOf="@id/latitude_label" />
-    <EditText
-        android:id="@+id/longitude"
-        android:layout_width="200sp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/longitude_label"
-        android:layout_toRightOf="@id/longitude_label" />
     <EditText
         android:id="@+id/from_date"
         android:layout_width="200sp"
@@ -71,13 +44,6 @@
         android:layout_alignTop="@id/to_date_label"
         android:layout_toRightOf="@id/to_date_label"
         android:text="2013-08-25" />
-    <EditText
-        android:id="@+id/categories"
-        android:layout_width="200sp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/categories_label"
-        android:layout_toRightOf="@id/categories_label"
-        android:text="" />
 
     <Button
         android:id="@+id/search_submit"

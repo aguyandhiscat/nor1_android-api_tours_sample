@@ -42,7 +42,9 @@ public class TripListActivity extends Activity {
 
                 list.add(t);
             }
-        } catch(JSONException e) { }
+        } catch(JSONException e) {
+            Log.e(TAG, "Json Issue", e);
+        }
 
         // get data from the table by the ListAdapter
         ListAdapter adapter = new TripListAdapter(this, list);
