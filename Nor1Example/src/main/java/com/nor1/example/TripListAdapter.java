@@ -91,7 +91,7 @@ public class TripListAdapter extends BaseAdapter {
             } catch(IOException e) {
 
             }
-            return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8);
+            return Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
         }
     }
 }
