@@ -1,4 +1,4 @@
-package com.nor1.example;
+package com.nor1.example.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nor1.example.R;
+import com.nor1.example.Tour;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

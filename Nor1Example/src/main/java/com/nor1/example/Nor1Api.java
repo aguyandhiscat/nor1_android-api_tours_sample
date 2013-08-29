@@ -32,4 +32,11 @@ public class Nor1Api {
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, params, handler);
     }
+
+    public void find(String trip_reference, JsonHttpResponseHandler handler) {
+        String url = uri + String.format("tour/%s", trip_reference);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, handler);
+    }
 }

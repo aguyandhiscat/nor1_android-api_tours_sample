@@ -7,4 +7,5 @@ public class Tour {
     public String thumbnailUrl;
     public String title;
     public String description;
+    public String reference;
 }

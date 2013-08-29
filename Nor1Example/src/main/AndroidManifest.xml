@@ -8,6 +8,7 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="14" />
 
+    <uses-library android:name="com.google.android.maps"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -27,6 +28,12 @@
         <activity
                 android:name=".TripListActivity"
                 android:parentActivityName=".MainActivity">
+
+        </activity>
+
+        <activity
+                android:name=".TripDetailsActivity"
+                android:parentActivityName=".TripListActivity">
 
         </activity>
     </application>
