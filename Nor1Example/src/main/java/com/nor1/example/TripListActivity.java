@@ -2,8 +2,13 @@ package com.nor1.example;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +28,22 @@ public class TripListActivity extends Activity {
 
         List<Tour> list = new ArrayList<Tour>();
 
-        Tour t = new Tour();
-        t.description = "This is a test description";
-        t.title = "Test tour";
-        t.thumbnailUrl = "http://media.tripapi.com/FLX-75FB-61A9-0BF/thumb_b0ae6f84bb8199ac9bdd9cf7d6df6cc0.jpg";
-        list.add(t);
+        try {
+            JSONArray tours = SearchResults.getInstance().getResults().getJSONArray("filtered_detailed_tours");
+            int len = tours.length();
+
+            for(int i=0; i<len; i++) {
+                JSONObject tour = tours.getJSONObject(i);
+
+                Tour t = new Tour();
+                t.thumbnailUrl = tour.getString("primary_image");
+                t.title = tour.getString("name");
+                t.description = tour.getString("description_short");
+
+                list.add(t);
+            }
+        } catch(JSONException e) { }
+
         // get data from the table by the ListAdapter
         ListAdapter adapter = new TripListAdapter(this, list);
 

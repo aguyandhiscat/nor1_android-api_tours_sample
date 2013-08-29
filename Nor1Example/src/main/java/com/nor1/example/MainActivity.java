@@ -1,6 +1,8 @@
 package com.nor1.example;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
 import android.preference.PreferenceManager;
@@ -18,6 +20,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
@@ -51,7 +54,7 @@ public class MainActivity extends Activity {
         Button searchBtn = (Button) findViewById(R.id.search_submit);
         searchBtn.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View view) {
-                openTripList();
+                search();
             }
         });
 
@@ -79,7 +82,8 @@ public class MainActivity extends Activity {
                 Log.d(TAG, "OnSuccess, JsonObject");
                 // Go to list Activity
                 // Pass timeline data through Intent
-
+                SearchResults.getInstance().setResults(timeline);
+                openTripList();
             }
 
             @Override
@@ -106,38 +110,13 @@ public class MainActivity extends Activity {
         Toast.makeText(this, e.getMessage(), 2000).show();
     }
 
-    // Settings
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch(item.getItemId()) {
-            case R.id.action_settings:
-                openSettings();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
-            case INTENT_SETTINGS_ACTIVITY:
+            case INTENT_TRIP_LIST_ACTIVITY:
                 // RESULT_OK, RESULT_CANCELED
-                Log.d(TAG, "Returned from Settings activity");
+                Log.d(TAG, "Returned from TripList activity");
         }
-    }
-
-    protected void openSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivityForResult(intent, INTENT_SETTINGS_ACTIVITY);
     }
 
     protected void openTripList() {
