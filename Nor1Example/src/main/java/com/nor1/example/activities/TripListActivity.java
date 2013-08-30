@@ -3,59 +3,38 @@ package com.nor1.example.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.nor1.example.R;
-import com.nor1.example.SearchResults;
+import com.nor1.example._api.Nor1Api;
 import com.nor1.example.adapter.TripListAdapter;
+import com.nor1.example.containers.Storage;
 import com.nor1.example.containers.Tour;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by alexwilczewski on 8/27/13.
  */
 public class TripListActivity extends Activity {
-    private final String TAG = "Nor1Example:MainActivity";
+    private final String TAG = "Nor1Example:TripListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_list);
 
+        List<Tour> list = Nor1Api.getInstance().getToursFromSearchResults(
+                (JSONObject) Storage.getInstance().get(MainActivity.STORAGE_SEARCH_RESULTS)
+        );
+
+        // Set up ListView
         ListView mTripList = (ListView) findViewById(R.id.trip_list);
-
-        List<Tour> list = new ArrayList<Tour>();
-
-        try {
-            JSONArray tours = SearchResults.getInstance().getResults().getJSONArray("filtered_detailed_tours");
-            int len = tours.length();
-
-            for(int i=0; i<len; i++) {
-                JSONObject tour = tours.getJSONObject(i);
-
-                Tour t = new Tour();
-                t.reference = tour.getString("flextrip_reference");
-                t.thumbnailUrl = tour.getString("primary_image");
-                t.title = tour.getString("name");
-                t.description = tour.getString("description_short");
-
-                list.add(t);
-            }
-        } catch(JSONException e) {
-            Log.e(TAG, "Json Issue", e);
-        }
-
-        // get data from the table by the ListAdapter
         ListAdapter adapter = new TripListAdapter(this, list);
         mTripList.setAdapter(adapter);
 
@@ -65,12 +44,12 @@ public class TripListActivity extends Activity {
                 // Goto Details view
                 ListAdapter adapter = (ListAdapter) adapterView.getAdapter();
                 Tour t = (Tour) adapter.getItem(i);
-                openTripDetails(t);
+                openTripDetailsActivity(t);
             }
         });
     }
 
-    protected void openTripDetails(Tour t) {
+    protected void openTripDetailsActivity(Tour t) {
         Intent intent = new Intent(this, TripDetailsActivity.class);
         intent.putExtra("trip_reference", t.reference);
         startActivity(intent);

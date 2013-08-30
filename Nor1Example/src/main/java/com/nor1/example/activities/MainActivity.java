@@ -10,15 +10,16 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.nor1.example.Nor1Api;
+import com.nor1.example._api.Nor1Api;
 import com.nor1.example.R;
-import com.nor1.example.SearchResults;
-import com.nor1.example.activities.TripListActivity;
+import com.nor1.example.containers.Storage;
 
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
     private final String TAG = "Nor1Example:MainActivity";
+
+    public static final int STORAGE_SEARCH_RESULTS = 1;
 
     private EditText mEditAddress;
     private EditText mEditFromDate;
@@ -28,7 +29,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Nor1Api.getInstance().setApiKey(this.getString(R.string.api_key));
+        Nor1Api.getInstance().setApiKey(this.getString(R.string.api_key));
     }
 
     @Override
@@ -69,7 +70,7 @@ public class MainActivity extends Activity {
         AsyncHttpClient client = Nor1Api.getInstance().search(mAddress, mFromDate, mToDate, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject timeline) {
-                SearchResults.getInstance().setResults(timeline);
+                Storage.getInstance().store(MainActivity.STORAGE_SEARCH_RESULTS, timeline);
                 startTripListActivity();
             }
 
@@ -81,7 +82,7 @@ public class MainActivity extends Activity {
         });
 
         if(client == null) {
-            displayError("Api Not Set");
+            displayError("ApiKey Not Set");
             layoutToSearch();
         }
     }

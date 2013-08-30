@@ -1,12 +1,18 @@
-package com.nor1.example;
+package com.nor1.example._api;
 
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nor1.example.containers.Tour;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by alexwilczewski on 8/27/13.
@@ -35,6 +41,8 @@ public class Nor1Api {
         this.APIKEY = key;
         this.hasSetApiKey = true;
     }
+
+    /** Webservices **/
 
     /**
      * Performs a search for tours on the parameters passed.
@@ -86,4 +94,35 @@ public class Nor1Api {
 
         return client;
     }
+
+    /** End Webservices **/
+
+    /** Result Handling **/
+
+    public List<Tour> getToursFromSearchResults(JSONObject timeline) {
+        List<Tour> list = new ArrayList<Tour>();
+
+        try {
+            JSONArray jsonArrTours = timeline.getJSONArray("filtered_detailed_tours");
+            int len = jsonArrTours.length();
+
+            for(int i=0; i<len; i++) {
+                JSONObject jsonObjTour = jsonArrTours.getJSONObject(i);
+
+                Tour tour = new Tour();
+                tour.reference = jsonObjTour.getString("flextrip_reference");
+                tour.thumbnailUrl = jsonObjTour.getString("primary_image");
+                tour.title = jsonObjTour.getString("name");
+                tour.description = jsonObjTour.getString("description_short");
+
+                list.add(tour);
+            }
+        } catch(JSONException e) {
+            Log.e(TAG, "JSON Exception", e);
+        }
+
+        return list;
+    }
+
+    /** End Result Handling **/
 }
