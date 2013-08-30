@@ -5,6 +5,14 @@
     <!-- ACCOUNT SETTINGS -->
     <string name="api_key">1234-5678-90</string>
 
-    <!-- Strings -->
-    <string name="search_label">Search</string>
+    <!-- Layout -->
+    <string name="search_btn">Search</string>
+    <string name="address_label">Address</string>
+    <string name="from_date_label">From Date</string>
+    <string name="to_date_label">To Date</string>
+
+    <!-- Defaults -->
+    <string name="address_default">San Francisco, CA</string>
+    <string name="from_date_default">2013-08-26</string>
+    <string name="to_date_default">2013-08-27</string>
 </resources>
