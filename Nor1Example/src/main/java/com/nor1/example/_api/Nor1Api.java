@@ -5,6 +5,7 @@ import android.util.Log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nor1.example.containers.DetailedTour;
 import com.nor1.example.containers.Tour;
 
 import org.json.JSONArray;
@@ -12,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -122,6 +124,75 @@ public class Nor1Api {
         }
 
         return list;
+    }
+
+    public DetailedTour getDetailedTourFromFind(JSONObject timeline) {
+        DetailedTour detailedTour = new DetailedTour();
+
+        try {
+            // Parse through top-level details
+            detailedTour.name = timeline.getString("name");
+            detailedTour.descriptionLong = timeline.getString("description_long");
+
+            // Parse through media / images
+            JSONArray jsonArrMedia = timeline.getJSONArray("media");
+            int len = jsonArrMedia.length();
+            List<DetailedTour.ImageItem> images = new ArrayList<DetailedTour.ImageItem>();
+
+            for(int i=0; i<len; i++) {
+                JSONObject jsonObjImageData = jsonArrMedia.getJSONObject(i);
+                String description = jsonObjImageData.getString("description");
+                JSONArray jsonArrImageVersions = jsonObjImageData.getJSONArray("versions");
+                if(jsonArrImageVersions.length() > 0) {
+                    String imageUrl = jsonArrImageVersions.getJSONObject(0).getString("url");
+
+                    DetailedTour.ImageItem imageItem = detailedTour.new ImageItem();
+                    imageItem.imageTitle = description;
+                    imageItem.imageUrl = imageUrl;
+                    images.add(imageItem);
+                }
+            }
+            detailedTour.images = images;
+
+
+            // Parse through schedules / prices
+            JSONObject jsonObjSchedules = timeline.getJSONObject("schedules");
+
+            Iterator<String> itr = jsonObjSchedules.keys();
+            List<DetailedTour.ScheduleItem> schedules = new ArrayList<DetailedTour.ScheduleItem>();
+
+            while(itr.hasNext()) {
+                String key = itr.next();
+
+                JSONObject jsonObjSchedule = jsonObjSchedules.getJSONObject(key);
+
+                DetailedTour.ScheduleItem scheduleItem = detailedTour.new ScheduleItem();
+                scheduleItem.id = key;
+                scheduleItem.title = jsonObjSchedule.getString("title");
+                scheduleItem.type = jsonObjSchedule.getString("type");
+                scheduleItem.description = jsonObjSchedule.getString("description");
+                scheduleItem.commentary = jsonObjSchedule.getString("commentary");
+                scheduleItem.from = jsonObjSchedule.getString("from");
+                scheduleItem.to = jsonObjSchedule.getString("to");
+                scheduleItem.day_hash = jsonObjSchedule.getString("day_hash");
+                scheduleItem.first_service = jsonObjSchedule.getString("first_service");
+                scheduleItem.last_service = jsonObjSchedule.getString("last_service");
+                scheduleItem.interval = jsonObjSchedule.getString("interval");
+                scheduleItem.departure_point = jsonObjSchedule.getString("departure_point");
+                scheduleItem.time = jsonObjSchedule.getString("time");
+                scheduleItem.duration = jsonObjSchedule.getString("duration");
+                scheduleItem.duration_minutes = jsonObjSchedule.getString("duration_minutes");
+                scheduleItem.frequency = jsonObjSchedule.getString("frequency");
+                scheduleItem.pickup_required = jsonObjSchedule.getString("pickup_required");
+                scheduleItem.dropoff_required = jsonObjSchedule.getString("dropoff_required");
+                schedules.add(scheduleItem);
+            }
+            detailedTour.schedules = schedules;
+        } catch(JSONException e) {
+            Log.e(TAG, "JSON Exception", e);
+        }
+
+        return detailedTour;
     }
 
     /** End Result Handling **/

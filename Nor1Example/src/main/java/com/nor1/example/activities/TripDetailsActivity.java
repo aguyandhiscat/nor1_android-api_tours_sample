@@ -18,10 +18,8 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nor1.example._api.Nor1Api;
 import com.nor1.example.R;
-import com.nor1.example.containers.ImageItem;
-import com.nor1.example.containers.ScheduleItem;
+import com.nor1.example.containers.DetailedTour;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,102 +69,63 @@ public class TripDetailsActivity extends Activity {
     protected void showDetails(JSONObject timeline) {
         setContentView(R.layout.activity_trip_details);
 
-        TextView textView;
-        try {
-            textView = (TextView) findViewById(R.id.detail_title);
-            textView.setText(timeline.getString("name"));
+        DetailedTour detailedTour = Nor1Api.getInstance().getDetailedTourFromFind(timeline);
 
-            textView = (TextView) findViewById(R.id.detail_description);
-            textView.setText(timeline.getString("description_long"));
+        ((TextView) findViewById(R.id.detail_title)).setText(detailedTour.name);
+        ((TextView) findViewById(R.id.detail_description)).setText(detailedTour.descriptionLong);
 
-            ViewGroup mediaView = (LinearLayout) findViewById(R.id.detail_media_list);
-            setUpMediaList(mediaView, timeline.getJSONArray("media"));
+        ViewGroup mediaView = (LinearLayout) findViewById(R.id.detail_media_list);
+        setUpMediaList(mediaView, detailedTour.images);
 
-            ViewGroup schedulesView = (LinearLayout) findViewById(R.id.detail_schedules_list);
-            setUpSchedulesList(schedulesView, timeline.getJSONObject("schedules"));
-        } catch(JSONException e) {
-            Log.e(TAG, "Json exception", e);
-        }
+        ViewGroup schedulesView = (LinearLayout) findViewById(R.id.detail_schedules_list);
+        setUpSchedulesList(schedulesView, detailedTour.schedules);
     }
 
     public void displayError(Throwable e) {
         Toast.makeText(this, e.getMessage(), 2000).show();
     }
 
-    protected void setUpMediaList(ViewGroup mediaView, JSONArray media) {
-        int len = media.length();
-        List<ImageItem> list = new ArrayList<ImageItem>();
+    protected void setUpMediaList(ViewGroup mediaView, List<DetailedTour.ImageItem> images) {
+        Iterator<DetailedTour.ImageItem> itr = images.iterator();
+        while(itr.hasNext()) {
+            DetailedTour.ImageItem imageItem = itr.next();
+            View viewElem = View.inflate(this, R.layout.list_item_media, null);
 
-        for(int i=0; i<len; i++) {
-            try {
-                JSONObject imageData = media.getJSONObject(i);
-                String description = imageData.getString("description");
-                JSONArray imageVersions = imageData.getJSONArray("versions");
-                if(imageVersions.length() > 0) {
-                    String imageUrl = imageVersions.getJSONObject(0).getString("url");
+            ((TextView) viewElem.findViewById(R.id.item_media_title)).setText(imageItem.imageTitle);
+            ImageView thumbnail = (ImageView) viewElem.findViewById(R.id.item_media_image);
+            thumbnail.setTag(imageItem.imageUrl);
+            new DownloadImageTask().execute(thumbnail);
 
-                    View viewElem = View.inflate(this, R.layout.list_item_media, null);
-                    TextView title = (TextView) viewElem.findViewById(R.id.item_media_title);
-                    title.setText(description);
-                    ImageView thumbnail = (ImageView) viewElem.findViewById(R.id.item_media_image);
-                    thumbnail.setTag(imageUrl);
-                    new DownloadImageTask().execute(thumbnail);
-
-                    mediaView.addView(viewElem);
-
-                    ImageItem ii = new ImageItem();
-                    ii.imageTitle = description;
-                    ii.imageUrl = imageUrl;
-
-                    list.add(ii);
-                }
-            } catch(JSONException e) {
-                Log.e(TAG, "JSON Exception", e);
-            }
+            mediaView.addView(viewElem);
         }
     }
 
-    protected void setUpSchedulesList(ViewGroup schedulesView, JSONObject schedules) {
-        int len = schedules.length();
-        Iterator<String> itr = schedules.keys();
-        List<ScheduleItem> list = new ArrayList<ScheduleItem>();
-
+    protected void setUpSchedulesList(ViewGroup schedulesView, List<DetailedTour.ScheduleItem> schedules) {
+        Iterator<DetailedTour.ScheduleItem> itr = schedules.iterator();
         while(itr.hasNext()) {
-            String key = itr.next();
-
+            DetailedTour.ScheduleItem scheduleItem = itr.next();
             View viewElem = View.inflate(this, R.layout.list_item_schedule, null);
 
-            try {
-                JSONObject schedule = schedules.getJSONObject(key);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_key)).setText(scheduleItem.id);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_title)).setText("Title: "+scheduleItem.title);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_type)).setText("Type: "+scheduleItem.type);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_description)).setText("Description: "+scheduleItem.description);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_commentary)).setText("Commentary: "+scheduleItem.commentary);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_from_date)).setText("From: "+scheduleItem.from);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_to_date)).setText("To: "+scheduleItem.to);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_day_hash)).setText("Day Hash: "+scheduleItem.day_hash);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_first_service)).setText("First Service: "+scheduleItem.first_service);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_last_service)).setText("Last Service: "+scheduleItem.last_service);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_interval)).setText("Interval: "+scheduleItem.interval);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_departure_point)).setText("Departure Point: "+scheduleItem.departure_point);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_time)).setText("Time: "+scheduleItem.time);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_duration)).setText("Duration: "+scheduleItem.duration);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_duration_minutes)).setText("Duration Minutes: "+scheduleItem.duration_minutes);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_frequency)).setText("Frequency: "+scheduleItem.frequency);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_pickup_required)).setText("Pickup Required: "+scheduleItem.pickup_required);
+            ((TextView) viewElem.findViewById(R.id.item_schedule_dropoff_required)).setText("Dropoff Required: "+scheduleItem.dropoff_required);
 
-                ((TextView) viewElem.findViewById(R.id.item_schedule_title)).setText(key);
-                ((TextView) viewElem.findViewById(R.id.item_schedule_title)).setText("Title: "+schedule.getString("title"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_type)).setText("Type: "+schedule.getString("type"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_description)).setText("Description: "+schedule.getString("description"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_commentary)).setText("Commentary: "+schedule.getString("commentary"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_from_date)).setText("From: "+schedule.getString("from"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_to_date)).setText("To: "+schedule.getString("to"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_day_hash)).setText("Day Hash: "+schedule.getString("day_hash"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_first_service)).setText("First Service: "+schedule.getString("first_service"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_last_service)).setText("Last Service: "+schedule.getString("last_service"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_interval)).setText("Interval: "+schedule.getString("interval"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_departure_point)).setText("Departure Point: "+schedule.getString("departure_point"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_time)).setText("Time: "+schedule.getString("time"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_duration)).setText("Duration: "+schedule.getString("duration"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_duration_minutes)).setText("Duration Minutes: "+schedule.getString("duration_minutes"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_frequency)).setText("Frequency: "+schedule.getString("frequency"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_pickup_required)).setText("Pickup Required: "+schedule.getString("pickup_required"));
-                ((TextView) viewElem.findViewById(R.id.item_schedule_dropoff_required)).setText("Dropoff Required: "+schedule.getString("dropoff_required"));
-    //            ((TextView) viewElem.findViewById(R.id.item_schedule_child_price)).setText(schedule.getString("to"));
-    //            ((TextView) viewElem.findViewById(R.id.item_schedule_adult_price)).setText(schedule.getString("to"));
-
-                schedulesView.addView(viewElem);
-
-                ScheduleItem item = new ScheduleItem();
-                list.add(item);
-            } catch(JSONException e) {
-                Log.e(TAG, "JSON Exception", e);
-            }
+            schedulesView.addView(viewElem);
         }
     }
 
@@ -187,11 +146,11 @@ public class TripDetailsActivity extends Activity {
             try {
                 URL newurl = new URL(url);
                 return BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
-            } catch(MalformedURLException e) {
-
-            } catch(IOException e) {
-
             }
+            catch(MalformedURLException e) { }
+            catch(IOException e) { }
+
+            // In case something happened with image loading, return a 1x1 transparent image
             return Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
         }
     }
