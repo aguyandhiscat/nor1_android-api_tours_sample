@@ -1,4 +1,4 @@
-package com.nor1.example;
+package com.nor1.example.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.nor1.example.R;
+import com.nor1.example.SearchResults;
+import com.nor1.example.TripDetailsActivity;
 import com.nor1.example.adapter.TripListAdapter;
 import com.nor1.example.containers.Tour;
 

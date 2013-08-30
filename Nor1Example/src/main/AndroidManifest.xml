@@ -16,7 +16,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name="com.nor1.example.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,16 +26,14 @@
         </activity>
 
         <activity
-                android:name=".TripListActivity"
-                android:parentActivityName=".MainActivity">
-
-        </activity>
+                android:name=".activities.TripListActivity"
+                android:parentActivityName=".MainActivity"
+                android:label="@string/list_activity_name" />
 
         <activity
                 android:name=".TripDetailsActivity"
-                android:parentActivityName=".TripListActivity">
-
-        </activity>
+                android:parentActivityName=".TripListActivity"
+                android:label="@string/details_activity_name" />
     </application>
 
 </manifest>
