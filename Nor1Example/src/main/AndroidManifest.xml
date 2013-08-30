@@ -27,12 +27,12 @@
 
         <activity
                 android:name=".activities.TripListActivity"
-                android:parentActivityName=".MainActivity"
+                android:parentActivityName=".activities.MainActivity"
                 android:label="@string/list_activity_name" />
 
         <activity
                 android:name=".activities.TripDetailsActivity"
-                android:parentActivityName=".TripListActivity"
+                android:parentActivityName=".activities.TripListActivity"
                 android:label="@string/details_activity_name" />
     </application>
 
