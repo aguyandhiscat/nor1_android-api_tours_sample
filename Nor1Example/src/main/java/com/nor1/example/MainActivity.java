@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONObject;
 
@@ -19,11 +20,22 @@ public class MainActivity extends Activity {
     private EditText mEditFromDate;
     private EditText mEditToDate;
 
-    private Nor1Api mApi;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+//        Nor1Api.getInstance().setApiKey(this.getString(R.string.api_key));
+    }
 
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
+
+        // Called after onCreate, sets up layout here.
+        layoutToSearch();
+    }
+
+    public void layoutToSearch() {
         setContentView(R.layout.activity_search);
 
         mEditAddress    = (EditText) findViewById(R.id.address);
@@ -36,8 +48,11 @@ public class MainActivity extends Activity {
                 search();
             }
         });
+    }
 
-        mApi = new Nor1Api(this.getString(R.string.api_key));
+    public void layoutToLoading() {
+        mEditAddress = mEditFromDate = mEditToDate = null;
+        setContentView(R.layout.loading);
     }
 
     public void search() {
@@ -45,29 +60,33 @@ public class MainActivity extends Activity {
         String mFromDate = mEditFromDate.getText().toString();
         String mToDate = mEditToDate.getText().toString();
 
-        mApi.search(mAddress, mFromDate, mToDate, new JsonHttpResponseHandler() {
+        layoutToLoading();
+
+        AsyncHttpClient client = Nor1Api.getInstance().search(mAddress, mFromDate, mToDate, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject timeline) {
-                Log.d(TAG, "OnSuccess, JsonObject");
-                // Go to list Activity
-                // Pass timeline data through Intent
                 SearchResults.getInstance().setResults(timeline);
-                openTripList();
+                startTripListActivity();
             }
 
             @Override
             public void onFailure(Throwable e, String response) {
-                Log.d(TAG, "OnFailure, String");
-                displayError(e);
+                layoutToSearch();
+                displayError(e.getMessage());
             }
         });
+
+        if(client == null) {
+            displayError("Api Not Set");
+            layoutToSearch();
+        }
     }
 
-    public void displayError(Throwable e) {
-        Toast.makeText(this, e.getMessage(), 2000).show();
+    public void displayError(String msg) {
+        Toast.makeText(this, msg, 2000).show();
     }
 
-    protected void openTripList() {
+    protected void startTripListActivity() {
         Intent intent = new Intent(this, TripListActivity.class);
         startActivity(intent);
     }

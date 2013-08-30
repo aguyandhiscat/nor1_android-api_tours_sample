@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nor1.example.containers.ImageItem;
 import com.nor1.example.containers.ScheduleItem;
@@ -50,9 +51,7 @@ public class TripDetailsActivity extends Activity {
 
         setContentView(R.layout.loading);
 
-        Nor1Api mApi = new Nor1Api(this.getString(R.string.api_key));
-
-        mApi.find(trip_reference, new JsonHttpResponseHandler() {
+        AsyncHttpClient client = Nor1Api.getInstance().find(trip_reference, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject timeline) {
                 Log.d(TAG, "OnSuccess, JsonObject");
