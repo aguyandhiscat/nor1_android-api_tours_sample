@@ -31,7 +31,7 @@
                 android:label="@string/list_activity_name" />
 
         <activity
-                android:name=".TripDetailsActivity"
+                android:name=".activities.TripDetailsActivity"
                 android:parentActivityName=".TripListActivity"
                 android:label="@string/details_activity_name" />
     </application>

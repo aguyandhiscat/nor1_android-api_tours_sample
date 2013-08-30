@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 import com.nor1.example.R;
 import com.nor1.example.SearchResults;
-import com.nor1.example.TripDetailsActivity;
 import com.nor1.example.adapter.TripListAdapter;
 import com.nor1.example.containers.Tour;
 

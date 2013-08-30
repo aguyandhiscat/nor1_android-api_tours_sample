@@ -1,4 +1,4 @@
-package com.nor1.example;
+package com.nor1.example.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nor1.example.Nor1Api;
+import com.nor1.example.R;
 import com.nor1.example.containers.ImageItem;
 import com.nor1.example.containers.ScheduleItem;
 
