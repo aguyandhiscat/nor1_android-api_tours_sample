@@ -23,7 +23,7 @@ public class Nor1Api {
     private final String TAG = "Nor1Sample:Nor1Api";
 
     private static Nor1Api instance;
-    private final String uri = "http://trip.nor1solutions.com/api/v1/";
+    private final String uri = "http://api.nor1.com/ta/v1/";
     private String APIKEY;
     private boolean hasSetApiKey;
 
@@ -70,6 +70,7 @@ public class Nor1Api {
         String url = uri + "search/";
 
         AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("NOR1APIKEY", APIKEY);
         client.get(url, params, handler);
 
         return client;
@@ -92,6 +93,7 @@ public class Nor1Api {
         String url = uri + String.format("tour/%s", trip_reference);
 
         AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("NOR1APIKEY", APIKEY);
         client.get(url, handler);
 
         return client;

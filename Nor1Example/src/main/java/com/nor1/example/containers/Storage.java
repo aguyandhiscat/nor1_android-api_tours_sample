@@ -1,7 +1,5 @@
 package com.nor1.example.containers;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 

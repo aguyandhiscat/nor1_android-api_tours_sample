@@ -20,13 +20,11 @@ import com.nor1.example._api.Nor1Api;
 import com.nor1.example.R;
 import com.nor1.example.containers.DetailedTour;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 

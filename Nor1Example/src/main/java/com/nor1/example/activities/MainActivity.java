@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
     private EditText mEditAddress;
     private EditText mEditFromDate;
     private EditText mEditToDate;
+    private boolean responseCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +68,29 @@ public class MainActivity extends Activity {
 
         layoutToLoading();
 
+        // Using a flag because the HttpResponseHandler library does not handle success/failure predictably
+        responseCompleted = false;
+
         AsyncHttpClient client = Nor1Api.getInstance().search(mAddress, mFromDate, mToDate, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject timeline) {
+                responseCompleted = true;
                 Storage.getInstance().store(MainActivity.STORAGE_SEARCH_RESULTS, timeline);
                 startTripListActivity();
             }
 
             @Override
             public void onFailure(Throwable e, String response) {
+                responseCompleted = true;
                 layoutToSearch();
                 displayError(e.getMessage());
+            }
+
+            public void onFinish() {
+                if(!responseCompleted) {
+                    layoutToSearch();
+                    displayError("Message did not go through.");
+                }
             }
         });
 
